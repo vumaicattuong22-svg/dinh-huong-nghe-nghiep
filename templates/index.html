@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Định Hướng Nghề Nghiệp AI</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 120px; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Hệ Thống Định Hướng Nghề Nghiệp AI cho Học Sinh THPT</h2>
+        <p>Nhập mô tả bản thân, điểm mạnh, sở thích hoặc kết quả trắc nghiệm (Holland, MBTI, DISC, MI...):</p>
+        <textarea id="userInput" placeholder="Ví dụ: Em thích vẽ, giỏi Toán, giao tiếp tốt..."></textarea>
+        <button onclick="sendData()">Phân Tích Ngay</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function sendData() {
+            const input = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+            if(!input) { alert('Vui lòng nhập thông tin!'); return; }
+            
+            resultDiv.innerText = "AI đang phân tích dữ liệu, vui lòng chờ trong giây lát...";
+            
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input_text: input })
+                });
+                const data = await res.json();
+                if(data.error) {
+                    resultDiv.innerText = "Lỗi: " + data.error;
+                } else {
+                    resultDiv.innerText = data.result;
+                }
+            } catch (err) {
+                resultDiv.innerText = "Có lỗi xảy ra kết nối Server!";
+            }
+        }
+    </script>
+</body>
+</html>
