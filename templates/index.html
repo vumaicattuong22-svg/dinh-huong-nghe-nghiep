@@ -3,49 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Định Hướng Nghề Nghiệp AI</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
-        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 120px; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc; }
-        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        #result { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; }
-    </style>
+    <title>Hồ Sơ Của Tôi - Lịch Sử Đánh Giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
-<body>
-    <div class="card">
-        <h2>Hệ Thống Định Hướng Nghề Nghiệp AI cho Học Sinh THPT</h2>
-        <p>Nhập mô tả bản thân, điểm mạnh, sở thích hoặc kết quả trắc nghiệm (Holland, MBTI, DISC, MI...):</p>
-        <textarea id="userInput" placeholder="Ví dụ: Em thích vẽ, giỏi Toán, giao tiếp tốt..."></textarea>
-        <button onclick="sendData()">Phân Tích Ngay</button>
-        <div id="result"></div>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"><i class="bi bi-robot me-2"></i>CareerAI</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Trang chủ</a>
+                <a class="nav-link active" href="/profile">Hồ sơ của tôi</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h2 class="fw-bold mb-4"><i class="bi bi-person-lines-fill me-2"></i>Lịch Sử Kết Quả Phân Tích</h2>
+
+        {% if history %}
+            <div class="row g-4">
+                {% for item in history %}
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-primary fs-6"><i class="bi bi-calendar3 me-1"></i> Ngày tạo: {{ item[3] }}</span>
+                            <span class="text-muted small">Mã kết quả: #{{ item[0] }}</span>
+                        </div>
+                        <h5 class="fw-bold text-secondary">Mô tả đầu vào:</h5>
+                        <p class="bg-light p-3 rounded border">{{ item[1] }}</p>
+                        <h5 class="fw-bold text-success mt-3">Kết quả từ AI:</h5>
+                        <div class="p-3 bg-white border rounded" style="white-space: pre-line;">{{ item[2] }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center py-5">
+                <h4>Chưa có lịch sử kết quả nào!</h4>
+                <p>Hãy quay lại trang chủ và thực hiện bài phân tích đầu tiên nhé.</p>
+                <a href="/" class="btn btn-primary mt-2">Bắt đầu phân tích</a>
+            </div>
+        {% endif %}
     </div>
 
-    <script>
-        async function sendData() {
-            const input = document.getElementById('userInput').value;
-            const resultDiv = document.getElementById('result');
-            if(!input) { alert('Vui lòng nhập thông tin!'); return; }
-            
-            resultDiv.innerText = "AI đang phân tích dữ liệu, vui lòng chờ trong giây lát...";
-            
-            try {
-                const res = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ input_text: input })
-                });
-                const data = await res.json();
-                if(data.error) {
-                    resultDiv.innerText = "Lỗi: " + data.error;
-                } else {
-                    resultDiv.innerText = data.result;
-                }
-            } catch (err) {
-                resultDiv.innerText = "Có lỗi xảy ra kết nối Server!";
-            }
-        }
-    </script>
 </body>
 </html>
